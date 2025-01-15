@@ -12,7 +12,7 @@ export default function Page() {
         </p>
         <div className="flex justify-center">
           <Link
-            href="/pages"
+            href="/pages/home"
             className="bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold py-2 px-4 rounded-lg transition duration-300"
           >
             Go to About Page

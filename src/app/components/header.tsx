@@ -25,22 +25,28 @@ const Header = () => {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
             <a
-              href="#"
+              href="/pages/home"
               className="text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
             >
               Home
             </a>
             <a
-              href="#"
+              href="/pages/all_blog"
               className="text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
             >
               All Blogs
             </a>
             <a
-              href="#"
+              href="/pages/add_blog"
               className="text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
             >
               Add Blog
+            </a>
+            <a
+              href="/pages/my_blog"
+              className="text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+            >
+              My Blog
             </a>
           </nav>
 

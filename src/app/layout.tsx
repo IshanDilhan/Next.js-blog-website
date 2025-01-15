@@ -35,7 +35,7 @@ export default function RootLayout({
           
             {/* <p>Welcome to Next.js 15 Crash Course</p> */}
             <Header/>
-          
+             <div className="mt-14"></div>
           {children}
           
           <Footer/>
