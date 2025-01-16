@@ -31,6 +31,7 @@ const Home = () => {
   };
 
   const handleBlogClick = () => {
+    
     router.push(`/pages/blog_details`);
   };
 

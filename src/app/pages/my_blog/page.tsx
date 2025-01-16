@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import axios from "axios";
 
 const MyBlogsPage = () => {
   const [isVerified, setIsVerified] = useState(false);
@@ -26,9 +27,27 @@ const MyBlogsPage = () => {
     },
   ]);
 
-  const handleVerify = () => {
-    // Placeholder for verification logic
-    setIsVerified(true);
+  const handleVerify = async () => {
+    
+    try {
+      // Replace with your actual API endpoint
+      const response = await axios.post("/api/verify", {
+        email,
+        phoneNumber,
+      });
+      
+      
+       console.log(response)
+      // Assuming the API returns a success message or status
+      if (response.data.success) {
+        setIsVerified(true);
+      } else {
+        alert("Verification failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Verification failed:", error);
+      alert("An error occurred. Please try again.");
+    }
   };
 
   return (
