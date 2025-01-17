@@ -7,7 +7,7 @@ connectToDatabase(); // Ensure the database is connected
 export async function POST(req) {
   try {
     const data = await req.json();
-    console.log(data)
+   // console.log(data)
     const { blogTitle, blogType, name, email, country, phoneNumber, description, images, userImage } = data;
 
     // Validate required fields
@@ -28,12 +28,13 @@ export async function POST(req) {
     });
 
     await newBlog.save(); // Save the blog entry to the database
-
+    console.log("added correctly")
     // Return a success response
     return NextResponse.json(
       { success: true, message: "Blog added successfully", blog: newBlog },
       { status: 201 }
     );
+    
   } catch (error) {
     console.error("Error adding blog:", error);
     return NextResponse.json(
