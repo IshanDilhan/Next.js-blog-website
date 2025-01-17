@@ -40,17 +40,41 @@ const AddBlog = () => {
     setLoading(true);
 
     try {
-      const formDataToSend = {
-        ...formData,
-        images: formData.images.map((file) => URL.createObjectURL(file)), // Convert images to base64/URL
-        userImage: formData.userImage
-          ? URL.createObjectURL(formData.userImage)
-          : null,
-      };
+      // Prepare FormData to send
+      const formDataToSend = new FormData();
 
-      const res = await axios.post("/api/addblog", formDataToSend);
+      // Add blogData as a JSON string
+      formDataToSend.append("blogData", JSON.stringify({
+        blogTitle: formData.blogTitle,
+        blogType: formData.blogType,
+        name: formData.name,
+        email: formData.email,
+        country: formData.country,
+        phoneNumber: formData.phoneNumber,
+        description: formData.description,
+        userImage: formData.userImage,
+      }));
 
-      setResponseMessage(res.data.message);
+      // Add images
+      formData.images.forEach((file) => {
+        formDataToSend.append("images", file);
+      });
+
+      // Add userImage if available
+      if (formData.userImage) {
+        formDataToSend.append("userImage", formData.userImage);
+      }
+
+      // Send data via POST request
+      const res = axios.post("/api/addblog", formDataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Ensure the correct content type
+        },
+      });
+
+      console.log(res);
+
+      // Reset form data
       setFormData({
         blogTitle: "",
         blogType: "",
@@ -69,6 +93,9 @@ const AddBlog = () => {
       setLoading(false);
     }
   };
+  
+  
+  
 
 
   return (
