@@ -126,6 +126,44 @@ const AddBlog = () => {
               className="w-full px-5 py-3 border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
           </div>
+          <div className="flex flex-wrap gap-4 justify-start">
+  {formData.images.map((image, index) => (
+    <div
+      key={index}
+      className="relative w-32 h-32 border border-gray-300 rounded-md overflow-hidden"
+    >
+      {/* Display the first image normally */}
+      <img
+        src={URL.createObjectURL(image)}
+        alt={`Uploaded Preview ${index + 1}`}
+        className="w-full h-full object-cover"
+      />
+      {/* For the second image, absolutely position it on top of the first one */}
+      {index > 0 && (
+        <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
+          <img
+            src={URL.createObjectURL(image)}
+            alt={`Uploaded Preview ${index + 1}`}
+            className="w-20 h-20 object-cover"
+          />
+        </div>
+      )}
+
+      <button
+        onClick={() => {
+          setFormData((prev) => ({
+            ...prev,
+            images: prev.images.filter((_, i) => i !== index),
+          }));
+        }}
+        className="absolute top-1 right-1 bg-red-500 text-white text-sm rounded-full p-1 hover:bg-red-700"
+      >
+        ✕
+      </button>
+    </div>
+  ))}
+</div>
+
 
           {/* Blog Title and Blog Type */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

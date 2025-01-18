@@ -10,6 +10,7 @@ export async function POST(req) {
   try {
     const data = await req.formData(); // Ensure it's properly awaited to access form data
     const files = data.getAll("images"); // Get all uploaded image files
+    const userimagefiles = data.getAll("userImage"); 
     const blogDataString = data.get("blogData"); // Get the blogData string
 
     if (!blogDataString) {
@@ -31,7 +32,9 @@ export async function POST(req) {
         { status: 400 }
       );
     }
-
+// console.log(blogData)
+// console.log(files)
+// console.log(userimagefiles)
     const savedFiles = [];
     const uploadDir = path.join(process.cwd(), "public", "uploads");
 
@@ -45,17 +48,23 @@ export async function POST(req) {
       savedFiles.push(`/uploads/${fileName}`); // Store relative path
     }
 
+
     // Handle userImage if provided and ensure it's a valid file
     let userImagePath = null;
-    if (userImage && userImage instanceof File) {
-      const arrayBuffer = await userImage.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-      const fileName = `${Date.now()}-${userImage.name}`;
-      const filePath = path.join(uploadDir, fileName);
-      await writeFile(filePath, buffer);
-      userImagePath = `/uploads/${fileName}`; // Store relative path for user image
-    }
 
+    // Check if there is at least one user image file
+    if (userimagefiles.length > 0) {
+      const userImageFile = userimagefiles[0]; // Assuming the first file is the user image
+      const arrayBuffer = await userImageFile.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const fileName = `${Date.now()}-${userImageFile.name}`;
+      const filePath = path.join(uploadDir, fileName);
+    
+      await writeFile(filePath, buffer);
+      userImagePath = `/uploads/${fileName}`; // Store relative path for the user image
+    }
+    
+ 
     // Save blog details to the database
     const newBlog = new Blog({
       blogTitle,
@@ -64,6 +73,7 @@ export async function POST(req) {
       description,
       images: savedFiles,
     });
+    console.log(newBlog)
 
     await newBlog.save(); // Save the blog entry to the database
 console.log("saved hoto")
