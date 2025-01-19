@@ -1,61 +1,90 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Slider from "react-slick"; // Install react-slick and slick-carousel for carousel functionality
+import { useRouter } from "next/navigation";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import axios from "axios";
+
+// Define the Blog type structure
+interface Blog {
+  _id: string;
+  blogTitle: string;
+  description: string;
+  blogType: string;
+  images: string[]; // Assuming images is an array of strings
+}
 
 const AllBlog = () => {
-  const [latestBlogs, setLatestBlogs] = useState([
-    { id: 1, title: "AI Revolution", image: "/ai-revolution.jpg", content: "Discover the future of AI..." },
-    { id: 2, title: "Tech Trends 2025", image: "/tech-trends.jpg", content: "What's coming in technology..." },
-    { id: 3, title: "Health and Wellness", image: "/wellness.jpg", content: "Tips for a healthier life..." },
-  ]);
+  const router = useRouter();
+  const [Blogs, setBlogs] = useState<Blog[]>([]);
 
-  const [blogs, setBlogs] = useState([
-    { id: 4, title: "Travel the World", image: "/travel.jpg", content: "Explore new places..." },
-    { id: 5, title: "Cooking Made Easy", image: "/cooking.jpg", content: "Delicious recipes..." },
-    { id: 6, title: "Fitness Tips", image: "/fitness.jpg", content: "Stay fit and active..." },
-    { id: 7, title: "Photography Basics", image: "/photography.jpg", content: "Capture stunning photos..." },
-  ]);
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const response = await axios.get("/api/getblogs");
+        const data = response.data.blogs;
+        setBlogs(data || []);
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
+
+  const carouselSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+  };
+
+  const handleBlogClick = (blog: Blog) => {
+    //console.log(blog._id)
+    router.push(`/pages/blog_details?blogId=${blog._id}`);
+  };
+  
+  
 
   return (
     <div className="bg-white">
-      {/* Header */}
       <header className="bg-gradient-to-r from-purple-500 to-pink-500 text-white py-8 text-center">
-        <h1 className="text-4xl font-bold">Welcome to All Blogs</h1>
+        <h1 className="text-4xl font-bold">All Blogs</h1>
+        <p className="mt-2">
+          Discover the latest and greatest blogs curated just for you!
+        </p>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-8">
-        {/* Latest Blogs */}
-        <section className="mb-12">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {latestBlogs.map((blog) => (
-              <div key={blog.id} className="border rounded-lg overflow-hidden shadow-md">
-                <img
-                  src={blog.image}
-                  alt={blog.title}
-                  className="w-full h-40 object-cover"
-                />
-                <div className="p-4">
-                  <h3 className="text-xl font-semibold text-gray-800">{blog.title}</h3>
-                  <p className="text-gray-600 text-sm mt-2">{blog.content}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+        {/* Latest Blogs Carousel */}
+        
 
-        {/* Other Blogs */}
+        {/* Explore More Blogs */}
         <section>
+          <h2 className="text-3xl font-bold text-gray-800 mb-6">
+            Explore More Blogs
+          </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {blogs.map((blog) => (
-              <div key={blog.id} className="border rounded-lg overflow-hidden shadow-md">
+            {Blogs.map((blog) => (
+              <div
+                key={blog._id}
+                className="border rounded-lg overflow-hidden shadow-md cursor-pointer"
+                onClick={() => handleBlogClick(blog)}
+              >
                 <img
-                  src={blog.image}
-                  alt={blog.title}
+                  src={blog.images?.[0] || "/placeholder.jpg"}
+                  alt={blog.blogTitle}
                   className="w-full h-40 object-cover"
                 />
                 <div className="p-4">
-                  <h3 className="text-xl font-semibold text-gray-800">{blog.title}</h3>
-                  <p className="text-gray-600 text-sm mt-2">{blog.content}</p>
+                  <h3 className="text-xl font-semibold text-gray-800">
+                    {blog.blogType}
+                  </h3>
+                  <p className="text-gray-600 text-sm mt-2">{blog.description}</p>
                 </div>
               </div>
             ))}
