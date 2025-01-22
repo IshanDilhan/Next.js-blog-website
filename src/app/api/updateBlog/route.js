@@ -1,3 +1,5 @@
+import { writeFile } from "fs/promises";
+import path from "path";
 import { NextResponse } from "next/server";
 import connectToDatabase from "../../../../lib/mongoose";
 import Blog from "../../../../models/blogmodel";
@@ -37,6 +39,19 @@ export async function PUT(req) {
     // Handle multiple images
     const imageFiles = formData.getAll("images");
     const savedFiles = imageFiles.map((file) => `/uploads/${file.name}`);
+
+ 
+        const uploadDir = path.join(process.cwd(), "public", "uploads");
+    
+        // Save image files to the public/uploads directory
+        for (const file of imageFiles) {
+          const arrayBuffer = await file.arrayBuffer();
+          const buffer = Buffer.from(arrayBuffer);
+          const fileName = `${Date.now()}-${file.name}`;
+          const filePath = path.join(uploadDir, fileName);
+          await writeFile(filePath, buffer);
+          savedFiles.push(`/uploads/${fileName}`); // Store relative path
+        }
 
     // Construct the updated data object
     const updatedData = {

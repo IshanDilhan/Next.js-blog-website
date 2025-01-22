@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import { useEffect, useState } from "react";
 import Slider from "react-slick"; // Install react-slick and slick-carousel for carousel functionality
 import { useRouter } from "next/navigation";
@@ -12,7 +13,15 @@ interface Blog {
   blogTitle: string;
   description: string;
   blogType: string;
-  images: string[]; // Assuming images is an array of strings
+  images: string[]; // Array of image URLs
+  author: {
+    name: string;
+    email: string;
+    country: string;
+    phoneNumber: string;
+    userImage: string | null; // Optional profile image of the author
+  };
+  createdAt: string; // ISO 8601 formatted date string
 }
 
 const Home = () => {
@@ -24,6 +33,7 @@ const Home = () => {
       try {
         const response = await axios.get("/api/getblogs");
         const data = response.data.blogs;
+        console.log(response.data.blogs);
         setBlogs(data || []);
       } catch (error) {
         console.error("Error fetching blogs:", error);
@@ -33,6 +43,15 @@ const Home = () => {
     fetchBlogs();
   }, []);
 
+  // Custom Arrow Component
+  const CustomArrow = ({ className, style, onClick }: any) => (
+    <div
+      className={`${className} bg-purple-500 rounded-full p-2`}
+      style={{ ...style, display: "block" }}
+      onClick={onClick}
+    />
+  );
+
   const carouselSettings = {
     dots: true,
     infinite: true,
@@ -41,14 +60,18 @@ const Home = () => {
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 3000,
+    nextArrow: <CustomArrow />,
+    prevArrow: <CustomArrow />,
+    appendDots: (dots: React.ReactNode) => (
+      <div style={{ bottom: "10px" }} className="absolute mx-auto w-full">
+        <ul style={{ margin: "0px" }}> {dots} </ul>
+      </div>
+    ),
   };
 
   const handleBlogClick = (blog: Blog) => {
-    //console.log(blog._id)
     router.push(`/pages/blog_details?blogId=${blog._id}`);
   };
-  
-  
 
   return (
     <div className="bg-white">
@@ -62,7 +85,9 @@ const Home = () => {
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Latest Blogs Carousel */}
         <section className="mb-12">
-          <h2 className="text-3xl font-bold text-gray-800 mb-6">Latest Blogs</h2>
+          <h2 className="text-3xl font-bold text-gray-800 mb-6">
+            Latest Blogs
+          </h2>
           {Blogs.length > 0 ? (
             <Slider {...carouselSettings}>
               {Blogs.map((blog) => (
@@ -78,7 +103,9 @@ const Home = () => {
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent p-4 text-white">
-                      <h3 className="text-2xl font-semibold">{blog.blogTitle}</h3>
+                      <h3 className="text-2xl font-semibold">
+                        {blog.blogTitle}
+                      </h3>
                       <p className="text-sm">{blog.description}</p>
                     </div>
                   </div>
@@ -109,9 +136,22 @@ const Home = () => {
                 />
                 <div className="p-4">
                   <h3 className="text-xl font-semibold text-gray-800">
-                    {blog.blogType}
+                    {blog.blogTitle}
                   </h3>
-                  <p className="text-gray-600 text-sm mt-2">{blog.description}</p>
+                  <h4 className="text-gray-600 text-sm">
+                    <span className="font-medium">Type:</span> {blog.blogType}
+                  </h4>
+                  <p className="text-gray-600 text-sm">
+                    <span className="font-medium">by:</span>{" "}
+                    {blog.author.name || "Unknown"}
+                    <span className="font-medium mx-2">{" | "}</span>
+                    <span className="font-medium">Added on:</span>{" "}
+                    {new Date(blog.createdAt).toLocaleDateString(undefined, {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                    })}
+                  </p>
                 </div>
               </div>
             ))}

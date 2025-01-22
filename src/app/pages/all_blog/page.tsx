@@ -1,23 +1,30 @@
 "use client";
 import { useEffect, useState } from "react";
-import Slider from "react-slick"; // Install react-slick and slick-carousel for carousel functionality
 import { useRouter } from "next/navigation";
+import axios from "axios";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import axios from "axios";
 
-// Define the Blog type structure
 interface Blog {
   _id: string;
   blogTitle: string;
   description: string;
   blogType: string;
-  images: string[]; // Assuming images is an array of strings
+  images: string[]; // Array of image URLs
+  author: {
+    name: string;
+    email: string;
+    country: string;
+    phoneNumber: string;
+    userImage: string | null; // Optional profile image of the author
+  };
+  createdAt: string; // ISO 8601 formatted date string
 }
 
 const AllBlog = () => {
   const router = useRouter();
-  const [Blogs, setBlogs] = useState<Blog[]>([]);
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -27,28 +34,27 @@ const AllBlog = () => {
         setBlogs(data || []);
       } catch (error) {
         console.error("Error fetching blogs:", error);
+      } finally {
+        setLoading(false); // Stop loading
       }
     };
 
     fetchBlogs();
   }, []);
 
-  const carouselSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 3000,
-  };
-
   const handleBlogClick = (blog: Blog) => {
-    //console.log(blog._id)
     router.push(`/pages/blog_details?blogId=${blog._id}`);
   };
-  
-  
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="text-center">
+          <p className="text-gray-600 text-lg">Loading blogs...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white">
@@ -60,16 +66,9 @@ const AllBlog = () => {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-8">
-        {/* Latest Blogs Carousel */}
-        
-
-        {/* Explore More Blogs */}
         <section>
-          <h2 className="text-3xl font-bold text-gray-800 mb-6">
-            Explore More Blogs
-          </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Blogs.map((blog) => (
+            {blogs.map((blog) => (
               <div
                 key={blog._id}
                 className="border rounded-lg overflow-hidden shadow-md cursor-pointer"
@@ -82,9 +81,22 @@ const AllBlog = () => {
                 />
                 <div className="p-4">
                   <h3 className="text-xl font-semibold text-gray-800">
-                    {blog.blogType}
+                    {blog.blogTitle}
                   </h3>
-                  <p className="text-gray-600 text-sm mt-2">{blog.description}</p>
+                  <h4 className="text-gray-600 text-sm">
+                    <span className="font-medium">Type:</span> {blog.blogType}
+                  </h4>
+                  <p className="text-gray-600 text-sm">
+                    <span className="font-medium">by:</span>{" "}
+                    {blog.author.name || "Unknown"}
+                    <span className="font-medium mx-2">{" | "}</span>
+                    <span className="font-medium">Added on:</span>{" "}
+                    {new Date(blog.createdAt).toLocaleDateString(undefined, {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                    })}
+                  </p>
                 </div>
               </div>
             ))}
