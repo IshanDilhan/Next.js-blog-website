@@ -124,13 +124,13 @@ const BlogDetails = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <p className="text-gray-600 text-lg">{error}</p>
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="flex items-center justify-center min-h-screen bg-gray-100">
+  //       <p className="text-gray-600 text-lg">{error}</p>
+  //     </div>
+  //   );
+  // }
 
   if (!blogDetails) {
     return (

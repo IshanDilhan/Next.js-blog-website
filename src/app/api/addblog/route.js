@@ -10,7 +10,7 @@ export async function POST(req) {
   try {
     const data = await req.formData(); // Ensure it's properly awaited to access form data
     const files = data.getAll("images"); // Get all uploaded image files
-    const userimagefiles = data.getAll("userImage"); 
+    const userimagefiles = data.getAll("userImage");
     const blogDataString = data.get("blogData"); // Get the blogData string
 
     if (!blogDataString) {
@@ -23,18 +23,30 @@ export async function POST(req) {
     const blogData = JSON.parse(blogDataString); // Parse the blog data JSON string
 
     // Destructure blog data
-    const { blogTitle, blogType, name, email, country, phoneNumber, description, userImage } = blogData;
+    const {
+      blogTitle,
+      blogType,
+      name,
+      email,
+      country,
+      phoneNumber,
+      description,
+      userImage,
+    } = blogData;
 
     // Validate required fields
     if (!blogTitle || !name || !email || !description) {
       return NextResponse.json(
-        { success: false, message: "Blog title, name, email, and description are required" },
+        {
+          success: false,
+          message: "Blog title, name, email, and description are required",
+        },
         { status: 400 }
       );
     }
-// console.log(blogData)
-// console.log(files)
-// console.log(userimagefiles)
+    // console.log(blogData)
+    // console.log(files)
+    // console.log(userimagefiles)
     const savedFiles = [];
     const uploadDir = path.join(process.cwd(), "public", "uploads");
 
@@ -48,7 +60,6 @@ export async function POST(req) {
       savedFiles.push(`/uploads/${fileName}`); // Store relative path
     }
 
-
     // Handle userImage if provided and ensure it's a valid file
     let userImagePath = null;
 
@@ -59,12 +70,11 @@ export async function POST(req) {
       const buffer = Buffer.from(arrayBuffer);
       const fileName = `${Date.now()}-${userImageFile.name}`;
       const filePath = path.join(uploadDir, fileName);
-    
+
       await writeFile(filePath, buffer);
       userImagePath = `/uploads/${fileName}`; // Store relative path for the user image
     }
-    
- 
+
     // Save blog details to the database
     const newBlog = new Blog({
       blogTitle,
@@ -73,10 +83,10 @@ export async function POST(req) {
       description,
       images: savedFiles,
     });
-    console.log(newBlog)
+    console.log(newBlog);
 
     await newBlog.save(); // Save the blog entry to the database
-console.log("saved hoto")
+    console.log("saved hoto");
     return NextResponse.json(
       { success: true, message: "Blog added successfully", blog: newBlog },
       { status: 201 }
@@ -84,7 +94,11 @@ console.log("saved hoto")
   } catch (error) {
     console.error("Error adding blog:", error);
     return NextResponse.json(
-      { success: false, message: "An error occurred while adding the blog", error: error.message },
+      {
+        success: false,
+        message: "An error occurred while adding the blog",
+        error: error.message,
+      },
       { status: 500 }
     );
   }

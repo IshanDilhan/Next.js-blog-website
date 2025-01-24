@@ -163,7 +163,7 @@ const EditBlog = () => {
                   alt={`Uploaded Preview ${index + 1}`}
                   className="w-full h-full object-cover"
                 /> */}
-                {index > 0 && (
+                {/* {index > 0 && (
                   <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
                     <img
                       src={URL.createObjectURL(image)}
@@ -171,7 +171,7 @@ const EditBlog = () => {
                       className="w-20 h-20 object-cover"
                     />
                   </div>
-                )}
+                )} */}
 
                 <button
                   onClick={() => {
