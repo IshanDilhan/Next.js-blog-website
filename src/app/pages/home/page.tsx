@@ -93,10 +93,10 @@ const Home = () => {
               {Blogs.map((blog) => (
                 <div
                   key={blog._id}
-                  className="p-4 cursor-pointer"
+                  className="p-5 cursor-pointer"
                   onClick={() => handleBlogClick(blog)}
                 >
-                  <div className="relative w-full h-64 rounded-lg overflow-hidden shadow-md">
+                  <div className="relative w-full h-80 rounded-lg overflow-hidden shadow-md">
                     <img
                       src={blog.images?.[0] || "/placeholder.jpg"}
                       alt={blog.blogTitle}

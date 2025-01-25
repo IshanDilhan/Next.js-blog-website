@@ -32,6 +32,7 @@ const BlogDetails = () => {
 
   const [blogDetails, setBlogDetails] = useState<Blog | null>(null);
   const [loading, setLoading] = useState(true);
+  const [imageLoaded, setimageLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [comments, setComments] = useState<Comment[]>([]); // State to store comments
@@ -223,28 +224,36 @@ const BlogDetails = () => {
 
           {/* Right Side: Image Carousel */}
           <div className="relative order-1 lg:order-2">
-            <img
-              src={images[currentImageIndex] || "/placeholder.jpg"}
-              alt={`Blog image ${currentImageIndex + 1}`}
-              className="w-full h-96 object-cover rounded-lg shadow-lg"
-            />
-            <div className="absolute top-1/2 left-4 transform -translate-y-1/2">
-              <button
-                onClick={prevImage}
-                className="bg-gray-800 text-white p-2 rounded-full hover:bg-gray-900"
-              >
-                &#8249;
-              </button>
-            </div>
-            <div className="absolute top-1/2 right-4 transform -translate-y-1/2">
-              <button
-                onClick={nextImage}
-                className="bg-gray-800 text-white p-2 rounded-full hover:bg-gray-900"
-              >
-                &#8250;
-              </button>
-            </div>
-          </div>
+  <img
+    src={images[currentImageIndex] || "/placeholder.jpg"}
+    alt={`Blog image ${currentImageIndex + 1}`}
+    className="w-full h-96 object-cover rounded-lg shadow-lg"
+    onLoad={() => setimageLoaded(true)} // Set the image loaded state to true
+  />
+  
+  {/* Show navigation buttons only when image is loaded */}
+  {imageLoaded && (
+    <>
+      <div className="absolute top-1/2 left-4 transform -translate-y-1/2">
+        <button
+          onClick={prevImage}
+          className="bg-gray-800 text-white p-2 rounded-full hover:bg-gray-900 transition-all"
+        >
+          &#8249;
+        </button>
+      </div>
+      <div className="absolute top-1/2 right-4 transform -translate-y-1/2">
+        <button
+          onClick={nextImage}
+          className="bg-gray-800 text-white p-2 rounded-full hover:bg-gray-900 transition-all"
+        >
+          &#8250;
+        </button>
+      </div>
+    </>
+  )}
+</div>
+
         </div>
       </div>
     </div>

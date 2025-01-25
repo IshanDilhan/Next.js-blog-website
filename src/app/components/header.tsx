@@ -17,34 +17,34 @@ const Header = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo Section */}
           <div className="flex items-center">
-          <h1 className="text-black">MyBlog</h1>
-
-
+            <h1 className="text-black font-extrabold text-2xl tracking-wide hover:text-yellow-300 transition-colors duration-300">
+              Blog Hub
+            </h1>
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
             <a
               href="/pages/home"
-              className="text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+              className="text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300 ease-in-out transform hover:scale-105"
             >
               Home
             </a>
             <a
               href="/pages/all_blog"
-              className="text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+              className="text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300 ease-in-out transform hover:scale-105"
             >
               All Blogs
             </a>
             <a
               href="/pages/add_blog"
-              className="text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+              className="text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300 ease-in-out transform hover:scale-105"
             >
               Add Blog
             </a>
             <a
               href="/pages/my_blog"
-              className="text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+              className="text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300 ease-in-out transform hover:scale-105"
             >
               My Blog
             </a>
@@ -53,7 +53,7 @@ const Header = () => {
           {/* User Profile Section */}
           <div className="flex items-center">
             <img
-              className="h-8 w-8 rounded-full object-cover border-2 border-gray-200"
+              className="h-10 w-10 rounded-full object-cover border-2 border-gray-200 hover:border-yellow-300 transition-all duration-300"
               src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=150&q=80"
               alt="User profile"
             />
@@ -62,7 +62,7 @@ const Header = () => {
               <button
                 onClick={toggleMenu}
                 type="button"
-                className="inline-flex items-center justify-center p-2 rounded-md text-gray-800 hover:text-blue-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+                className="inline-flex items-center justify-center p-2 rounded-md text-gray-800 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
                 aria-controls="mobile-menu"
                 aria-expanded={isMenuOpen}
               >
@@ -80,27 +80,33 @@ const Header = () => {
 
       {/* Mobile Navigation */}
       <div
-        className={`${isMenuOpen ? "block" : "hidden"} md:hidden`}
+        className={`${isMenuOpen ? "block" : "hidden"} md:hidden bg-white shadow-md transition-all ease-in-out duration-300`}
         id="mobile-menu"
       >
         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
           <a
             href="#"
-            className="text-gray-800 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium"
+            className="text-gray-800 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium transition duration-300 ease-in-out transform hover:scale-105"
           >
             Home
           </a>
           <a
             href="#"
-            className="text-gray-800 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium"
+            className="text-gray-800 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium transition duration-300 ease-in-out transform hover:scale-105"
           >
             All Blogs
           </a>
           <a
             href="#"
-            className="text-gray-800 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium"
+            className="text-gray-800 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium transition duration-300 ease-in-out transform hover:scale-105"
           >
             Add Blog
+          </a>
+          <a
+            href="#"
+            className="text-gray-800 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium transition duration-300 ease-in-out transform hover:scale-105"
+          >
+            My Blog
           </a>
         </div>
       </div>

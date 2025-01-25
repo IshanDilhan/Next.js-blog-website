@@ -1,6 +1,13 @@
+"use client";
 import Link from "next/link";
-
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 export default function Page() {
+  const router = useRouter();
+  useEffect(() => {
+    router.push(`/pages/home`)
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 flex items-center justify-center">
       <div className="bg-white shadow-lg rounded-lg max-w-lg w-full p-6">

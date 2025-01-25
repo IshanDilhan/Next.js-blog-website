@@ -2,7 +2,7 @@
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-
+import { ToastContainer, toast } from 'react-toastify';
 const AddBlog = () => {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -94,8 +94,11 @@ const AddBlog = () => {
         images: [],
         userImage: null,
       });
-
-      router.push(`/pages/home`);
+      toast.success("blog added ..."); // Display success message
+      setTimeout(() => {
+        router.push(`/pages/home`); // Navigate to the home page after 3 seconds
+      }, 3000); // 3-second delay
+      
     } catch (error: any) {
       console.error("Error submitting blog:", error);
       setResponseMessage(error.response?.data?.message || "An error occurred");
