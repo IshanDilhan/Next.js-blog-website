@@ -327,34 +327,35 @@ const EditBlog = () => {
           </div>
 
           {/* Image Upload Preview Section */}
-          <div className="relative w-32 h-32 border border-gray-300 rounded-md overflow-hidden">
-  {formData.userImage && (
-    <>
-      {/* Display the user image */}
+         {/* User Image */}
+         {formData.userImage && (
+  <div className="space-y-2">
+    <div className="relative w-32 h-32 border border-gray-300 rounded-md overflow-hidden">
       {typeof formData.userImage === "string" ? (
         <img
-          src={formData.userImage} // Existing user image URL
-          alt="User Image"
+          src={formData.userImage}
+          alt="User"
           className="w-full h-full object-cover"
         />
       ) : (
         <img
-          src={URL.createObjectURL(formData.userImage)} // Preview for new user image
-          alt="User Image"
+          src={URL.createObjectURL(formData.userImage)}
+          alt="Uploaded User"
           className="w-full h-full object-cover"
         />
       )}
-
-      {/* Remove Button */}
       <button
         onClick={handleRemoveUserImage}
         className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full text-xs"
       >
         ✕
       </button>
-    </>
-  )}
-</div>
+    </div>
+  </div>
+)}
+
+
+
 
 
           {/* Description */}

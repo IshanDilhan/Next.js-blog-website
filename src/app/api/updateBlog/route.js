@@ -26,11 +26,16 @@ export async function PUT(req) {
       country,
       phoneNumber,
       description,
-      images: existingImages = [], // Existing image paths
     } = blogData;
 
-    // Extract new image files from FormData
-    const newImageFiles = formData.getAll("images").filter((file) => file instanceof File);
+    // Extract all images from formData
+    const allImages = formData.getAll("images"); // Contains both files and strings
+    const newImageFiles = allImages.filter((file) => file instanceof File); // Newly added files
+    const existingImagePaths = allImages.filter((item) => typeof item === "string"); // Existing paths
+
+    console.log("All images from formData:", allImages);
+    console.log("New image files:", newImageFiles);
+    console.log("Existing image paths:", existingImagePaths);
 
     const savedFilePaths = [];
     const uploadDir = path.join(process.cwd(), "public", "uploads");
@@ -45,8 +50,34 @@ export async function PUT(req) {
       savedFilePaths.push(`/uploads/${fileName}`); // Relative path for the saved file
     }
 
-    // Combine existing image paths and new image paths
-    const allImages = [...existingImages, ...savedFilePaths];
+    // Combine existing image paths and newly saved paths
+    const allCombinedImages = [...existingImagePaths, ...savedFilePaths];
+
+    console.log("Final combined images:", allCombinedImages);
+   //user image 
+
+   // Extract user image from blogData
+const { userImage: existingUserImage = null } = blogData;
+
+// Get the new user image file from FormData
+const userImageFile = formData.get("userImage");
+console.log(userImageFile)
+// Check if userImageFile is a new file or an existing path
+let userImagePath = existingUserImage; // Default to the existing path
+
+if (userImageFile instanceof File) {
+  // Handle new user image upload
+  const arrayBuffer = await userImageFile.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  const fileName = `${Date.now()}-${userImageFile.name}`;
+  const uploadDir = path.join(process.cwd(), "public", "uploads");
+  const filePath = path.join(uploadDir, fileName);
+  await writeFile(filePath, buffer);
+  userImagePath = `/uploads/${fileName}`; // Update with the new path
+}
+
+// Log the result
+console.log("Final user image path:", userImagePath);
 
     // Construct updated blog data
     const updatedData = {
@@ -57,9 +88,10 @@ export async function PUT(req) {
         email,
         country,
         phoneNumber,
+        userImage: userImagePath
       },
       description,
-      images: allImages,
+      images: allCombinedImages,
     };
 
     // Update the blog in the database
