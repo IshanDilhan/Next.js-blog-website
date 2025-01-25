@@ -63,7 +63,7 @@ const Home = () => {
     nextArrow: <CustomArrow />,
     prevArrow: <CustomArrow />,
     appendDots: (dots: React.ReactNode) => (
-      <div style={{ bottom: "10px" }} className="absolute mx-auto w-full">
+      <div style={{ bottom: "-10px" }} className="absolute mx-auto w-full">
         <ul style={{ margin: "0px" }}> {dots} </ul>
       </div>
     ),
@@ -75,9 +75,9 @@ const Home = () => {
 
   return (
     <div className="bg-white">
-      <header className="bg-gradient-to-r from-purple-500 to-pink-500 text-white py-8 text-center">
+      <header className="bg-green-100 text-green-800 py-8 text-center shadow-sm">
         <h1 className="text-4xl font-bold">Welcome to the Blog Hub</h1>
-        <p className="mt-2">
+        <p className="mt-2 text-green-700">
           Discover the latest and greatest blogs curated just for you!
         </p>
       </header>
@@ -106,7 +106,7 @@ const Home = () => {
                       <h3 className="text-2xl font-semibold">
                         {blog.blogTitle}
                       </h3>
-                      <p className="text-sm">{blog.description}</p>
+                      <p className="text-sm">{blog.blogType}</p>
                     </div>
                   </div>
                 </div>

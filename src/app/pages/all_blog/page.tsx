@@ -58,12 +58,12 @@ const AllBlog = () => {
 
   return (
     <div className="bg-white">
-      <header className="bg-gradient-to-r from-purple-500 to-pink-500 text-white py-8 text-center">
-        <h1 className="text-4xl font-bold">All Blogs</h1>
-        <p className="mt-2">
-          Discover the latest and greatest blogs curated just for you!
-        </p>
-      </header>
+<header className="bg-green-100 text-green-800 py-8 text-center shadow-sm">
+  <h1 className="text-4xl font-bold">All Blogs</h1>
+  <p className="mt-2 text-green-700">
+    Discover the latest and greatest blogs curated just for you!
+  </p>
+</header>
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         <section>
