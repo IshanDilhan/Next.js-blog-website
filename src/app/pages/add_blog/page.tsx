@@ -39,7 +39,6 @@ const AddBlog = () => {
       }
     }
   };
-  
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -80,7 +79,7 @@ const AddBlog = () => {
           "Content-Type": "multipart/form-data", // Ensure the correct content type
         },
       });
-      console.log(formDataToSend)
+      console.log(formDataToSend);
       console.log(res);
 
       // Reset form data
@@ -97,7 +96,6 @@ const AddBlog = () => {
       });
 
       router.push(`/pages/home`);
-      
     } catch (error: any) {
       console.error("Error submitting blog:", error);
       setResponseMessage(error.response?.data?.message || "An error occurred");
@@ -122,44 +120,43 @@ const AddBlog = () => {
         <form className="space-y-6" onSubmit={handleSubmit}>
           {/* Blog Images */}
           <div className="space-y-2">
-  <label className="block text-lg font-medium text-gray-700">
-    Blog Images (Optional)
-  </label>
-  <input
-    type="file"
-    accept="image/*"
-    multiple
-    name="images"
-    onChange={handleFileChange}
-    className="w-full px-5 py-3 border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
-  />
-  <div className="flex flex-wrap gap-4 mt-4">
-    {formData.images.map((image, index) => (
-      <div
-        key={index}
-        className="relative w-32 h-32 border border-gray-300 rounded-md overflow-hidden"
-      >
-        <img
-          src={URL.createObjectURL(image)}
-          alt={`Uploaded Preview ${index + 1}`}
-          className="w-full h-full object-cover"
-        />
-        <button
-          onClick={() => {
-            setFormData((prev) => ({
-              ...prev,
-              images: prev.images.filter((_, i) => i !== index),
-            }));
-          }}
-          className="absolute top-1 right-1 bg-red-500 text-white text-sm rounded-full p-1 hover:bg-red-700"
-        >
-          ✕
-        </button>
-      </div>
-    ))}
-  </div>
-</div>
-
+            <label className="block text-lg font-medium text-gray-700">
+              Blog Images (Optional)
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              name="images"
+              onChange={handleFileChange}
+              className="w-full px-5 py-3 border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+            <div className="flex flex-wrap gap-4 mt-4">
+              {formData.images.map((image, index) => (
+                <div
+                  key={index}
+                  className="relative w-32 h-32 border border-gray-300 rounded-md overflow-hidden"
+                >
+                  <img
+                    src={URL.createObjectURL(image)}
+                    alt={`Uploaded Preview ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                  <button
+                    onClick={() => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        images: prev.images.filter((_, i) => i !== index),
+                      }));
+                    }}
+                    className="absolute top-1 right-1 bg-red-500 text-white text-sm rounded-full p-1 hover:bg-red-700"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
 
           {/* Blog Title and Blog Type */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -192,37 +189,37 @@ const AddBlog = () => {
           </div>
 
           {/* Your Name and Email Section */}
-<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-  {/* Name Input */}
-  <div className="space-y-2">
-    <label className="block text-lg font-medium text-gray-700">Your Name</label>
-    <input
-      type="text"
-      name="name"
-      value={formData.name}
-      onChange={handleInputChange}
-      className="w-full px-5 py-3 border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
-      placeholder="Enter your name"
-    />
-  </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Name Input */}
+            <div className="space-y-2">
+              <label className="block text-lg font-medium text-gray-700">
+                Your Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                className="w-full px-5 py-3 border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="Enter your name"
+              />
+            </div>
 
-  
-
-
-  {/* Email Input */}
-  <div className="space-y-2">
-    <label className="block text-lg font-medium text-gray-700">Your Email</label>
-    <input
-      type="email"
-      name="email"
-      value={formData.email}
-      onChange={handleInputChange}
-      className="w-full px-5 py-3 border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
-      placeholder="Enter your email"
-    />
-  </div>
-</div>
-
+            {/* Email Input */}
+            <div className="space-y-2">
+              <label className="block text-lg font-medium text-gray-700">
+                Your Email
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                className="w-full px-5 py-3 border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="Enter your email"
+              />
+            </div>
+          </div>
 
           {/* Country and Phone Number */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -269,28 +266,28 @@ const AddBlog = () => {
           </div>
 
           {/* Image Upload Preview Section */}
-  <div className="flex flex-wrap gap-4 mt-4">
-  {formData.userImage && ( // Conditional rendering to display only if userImage exists
-    <div className="relative w-32 h-32 border border-gray-300 rounded-md overflow-hidden">
-      <img
-        src={URL.createObjectURL(formData.userImage)} // Generate URL for the user image
-        alt="Uploaded Preview"
-        className="w-full h-full object-cover"
-      />
-      <button
-        onClick={() => {
-          setFormData((prev) => ({
-            ...prev,
-            userImage: null, // Set userImage to null to remove it
-          }));
-        }}
-        className="absolute top-1 right-1 bg-red-500 text-white text-sm rounded-full p-1 hover:bg-red-700"
-      >
-        ✕
-      </button>
-    </div>
-  )}
-</div>
+          <div className="flex flex-wrap gap-4 mt-4">
+            {formData.userImage && ( // Conditional rendering to display only if userImage exists
+              <div className="relative w-32 h-32 border border-gray-300 rounded-md overflow-hidden">
+                <img
+                  src={URL.createObjectURL(formData.userImage)} // Generate URL for the user image
+                  alt="Uploaded Preview"
+                  className="w-full h-full object-cover"
+                />
+                <button
+                  onClick={() => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      userImage: null, // Set userImage to null to remove it
+                    }));
+                  }}
+                  className="absolute top-1 right-1 bg-red-500 text-white text-sm rounded-full p-1 hover:bg-red-700"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+          </div>
 
           {/* Blog Description */}
           <div className="space-y-2">

@@ -27,10 +27,10 @@ const EditBlog = () => {
       // Fetch the blog details by ID
       const fetchBlogData = async () => {
         try {
-            const response = await fetch(`/api/getblogbyid?blogId=${id}`);
-            const data = await response.json();
-        //   const response = await axios.get(`/api/getblogbyid?blogId=${id}`);
-          console.log(data.blog)
+          const response = await fetch(`/api/getblogbyid?blogId=${id}`);
+          const data = await response.json();
+          //   const response = await axios.get(`/api/getblogbyid?blogId=${id}`);
+          console.log(data.blog);
           setFormData({
             blogTitle: data.blog.blogTitle,
             blogType: data.blog.blogType,
@@ -40,7 +40,7 @@ const EditBlog = () => {
             phoneNumber: data.blog.author.phoneNumber,
             description: data.blog.description,
             images: data.blog.images || [], // Assuming images are in an array
-            userImage: null, // Keeping userImage null for now
+            userImage: data.blog.author.userImage, // Keeping userImage null for now
           });
         } catch (error) {
           console.error("Error fetching blog data:", error);
@@ -63,12 +63,43 @@ const EditBlog = () => {
     const { name, files } = e.target;
     if (files) {
       if (name === "images") {
-        setFormData((prev) => ({ ...prev, images: Array.from(files) }));
+        setFormData((prev) => ({
+          ...prev,
+          images: [...prev.images, ...Array.from(files)], // Append new uploads to existing images
+        }));
+        console.log(formData.images);
       } else if (name === "userImage") {
         setFormData((prev) => ({ ...prev, userImage: files[0] }));
       }
     }
   };
+  const handleRemoveImage = (index: number, event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault(); // Prevent form submission
+  
+    setFormData((prev) => {
+      // Create a new array excluding the image at the given index
+      const updatedImages = [...prev.images];
+      updatedImages.splice(index, 1);
+  
+      return {
+        ...prev,
+        images: updatedImages, // Update images in formData
+      };
+    });
+  
+    // Log the updated images for debugging
+    setTimeout(() => console.log(formData.images), 0); // Ensure console reflects updated state
+  };
+  
+  
+  const handleRemoveUserImage = () => {
+    setFormData((prev) => ({
+      ...prev,
+      userImage: null, // Reset the user image to null
+    }));
+    console.log(formData.userImage);
+  };
+  
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -77,17 +108,20 @@ const EditBlog = () => {
     try {
       const formDataToSend = new FormData();
 
-      formDataToSend.append("blogData", JSON.stringify({
-        blogTitle: formData.blogTitle,
-        blogType: formData.blogType,
-        name: formData.name,
-        email: formData.email,
-        country: formData.country,
-        phoneNumber: formData.phoneNumber,
-        description: formData.description,
-        userImage: formData.userImage,
-      }));
-       
+      formDataToSend.append(
+        "blogData",
+        JSON.stringify({
+          blogTitle: formData.blogTitle,
+          blogType: formData.blogType,
+          name: formData.name,
+          email: formData.email,
+          country: formData.country,
+          phoneNumber: formData.phoneNumber,
+          description: formData.description,
+          userImage: formData.userImage,
+        })
+      );
+
       formData.images.forEach((file) => {
         formDataToSend.append("images", file);
       });
@@ -95,12 +129,16 @@ const EditBlog = () => {
       if (formData.userImage) {
         formDataToSend.append("userImage", formData.userImage);
       }
-       console.log(formDataToSend)
-      const res = await axios.put(`/api/updateBlog?blogId=${id}`, formDataToSend, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      console.log(formDataToSend);
+      const res = await axios.put(
+        `/api/updateBlog?blogId=${id}`,
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       console.log(res);
 
@@ -116,7 +154,9 @@ const EditBlog = () => {
         userImage: null,
       });
       setResponseMessage("Blog updated successfully");
-      router.push(`/pages/my_blog?Isloged=true&email=${formData.email}&tp=${formData.phoneNumber}`);
+      router.push(
+        `/pages/my_blog?Isloged=true&email=${formData.email}&tp=${formData.phoneNumber}`
+      );
     } catch (error: any) {
       console.error("Error submitting blog:", error);
       setResponseMessage(error.response?.data?.message || "An error occurred");
@@ -158,29 +198,25 @@ const EditBlog = () => {
                 key={index}
                 className="relative w-32 h-32 border border-gray-300 rounded-md overflow-hidden"
               >
-                {/* <img
-                  src={URL.createObjectURL(image)}
-                  alt={`Uploaded Preview ${index + 1}`}
-                  className="w-full h-full object-cover"
-                /> */}
-                {/* {index > 0 && (
-                  <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
-                    <img
-                      src={URL.createObjectURL(image)}
-                      alt={`Uploaded Preview ${index + 1}`}
-                      className="w-20 h-20 object-cover"
-                    />
-                  </div>
-                )} */}
+                {/* Display the image */}
+                {typeof image === "string" ? (
+                  <img
+                    src={image} // Show existing image URLs
+                    alt={`Uploaded Preview ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <img
+                    src={URL.createObjectURL(image)} // Show new image previews
+                    alt={`Uploaded Preview ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                )}
 
+                {/* Remove Button */}
                 <button
-                  onClick={() => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      images: prev.images.filter((_, i) => i !== index),
-                    }));
-                  }}
-                  className="absolute top-1 right-1 bg-red-500 text-white text-sm rounded-full p-1 hover:bg-red-700"
+                  onClick={(event) => handleRemoveImage(index, event)}
+                  className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full text-xs"
                 >
                   ✕
                 </button>
@@ -277,6 +313,49 @@ const EditBlog = () => {
               />
             </div>
           </div>
+          <div className="space-y-2">
+            <label className="block text-lg font-medium text-gray-700">
+              Your Image
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              name="userImage"
+              onChange={handleFileChange}
+              className="w-full px-5 py-3 border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+
+          {/* Image Upload Preview Section */}
+          <div className="relative w-32 h-32 border border-gray-300 rounded-md overflow-hidden">
+  {formData.userImage && (
+    <>
+      {/* Display the user image */}
+      {typeof formData.userImage === "string" ? (
+        <img
+          src={formData.userImage} // Existing user image URL
+          alt="User Image"
+          className="w-full h-full object-cover"
+        />
+      ) : (
+        <img
+          src={URL.createObjectURL(formData.userImage)} // Preview for new user image
+          alt="User Image"
+          className="w-full h-full object-cover"
+        />
+      )}
+
+      {/* Remove Button */}
+      <button
+        onClick={handleRemoveUserImage}
+        className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full text-xs"
+      >
+        ✕
+      </button>
+    </>
+  )}
+</div>
+
 
           {/* Description */}
           <div className="space-y-2">

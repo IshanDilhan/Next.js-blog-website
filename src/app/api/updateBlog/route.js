@@ -10,17 +10,14 @@ export async function PUT(req) {
   try {
     const { searchParams } = new URL(req.url);
     const blogId = searchParams.get("blogId");
-    console.log("Blog ID:", blogId);
 
     // Parse FormData from the request
     const formData = await req.formData();
 
-    // Extract fields from the formData
-    //console.log(formData)
+    // Parse and destructure fields
     const blogDataJson = formData.get("blogData");
-    const blogData = JSON.parse(blogDataJson);  // Ensure we parse the JSON string here
+    const blogData = JSON.parse(blogDataJson);
 
-    // Destructure fields from blogData
     const {
       blogTitle,
       blogType,
@@ -29,31 +26,29 @@ export async function PUT(req) {
       country,
       phoneNumber,
       description,
-      userImage,
+      images: existingImages = [], // Existing image paths
     } = blogData;
 
-    // Handle user image file
-    const userImageFile = formData.get("userImage");
-    const userImagePath = userImageFile ? `/uploads/${userImageFile.name}` : null;
+    // Extract new image files from FormData
+    const newImageFiles = formData.getAll("images").filter((file) => file instanceof File);
 
-    // Handle multiple images
-    const imageFiles = formData.getAll("images");
-    const savedFiles = imageFiles.map((file) => `/uploads/${file.name}`);
+    const savedFilePaths = [];
+    const uploadDir = path.join(process.cwd(), "public", "uploads");
 
- 
-        const uploadDir = path.join(process.cwd(), "public", "uploads");
-    
-        // Save image files to the public/uploads directory
-        for (const file of imageFiles) {
-          const arrayBuffer = await file.arrayBuffer();
-          const buffer = Buffer.from(arrayBuffer);
-          const fileName = `${Date.now()}-${file.name}`;
-          const filePath = path.join(uploadDir, fileName);
-          await writeFile(filePath, buffer);
-          savedFiles.push(`/uploads/${fileName}`); // Store relative path
-        }
+    // Save new image files
+    for (const file of newImageFiles) {
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const fileName = `${Date.now()}-${file.name}`;
+      const filePath = path.join(uploadDir, fileName);
+      await writeFile(filePath, buffer);
+      savedFilePaths.push(`/uploads/${fileName}`); // Relative path for the saved file
+    }
 
-    // Construct the updated data object
+    // Combine existing image paths and new image paths
+    const allImages = [...existingImages, ...savedFilePaths];
+
+    // Construct updated blog data
     const updatedData = {
       blogTitle,
       blogType,
@@ -62,20 +57,14 @@ export async function PUT(req) {
         email,
         country,
         phoneNumber,
-        userImage: userImagePath,
       },
       description,
-      images: savedFiles,
+      images: allImages,
     };
 
-    console.log("Updated Data:", updatedData);
-
-    // Find the blog and update it with the new data
+    // Update the blog in the database
     const updatedBlog = await Blog.findByIdAndUpdate(blogId, updatedData, { new: true });
 
-    console.log("Updated Blog:", updatedBlog);
-
-    // If no blog is found with the provided ID
     if (!updatedBlog) {
       return NextResponse.json(
         { success: false, message: "Blog not found" },
@@ -83,7 +72,7 @@ export async function PUT(req) {
       );
     }
 
-    // Return success response with updated blog data
+    // Return the updated blog
     return NextResponse.json(
       { success: true, message: "Blog updated successfully", updatedBlog },
       { status: 200 }
